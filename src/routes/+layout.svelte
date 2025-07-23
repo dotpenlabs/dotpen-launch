@@ -1,7 +1,39 @@
 <script lang="ts">
-	import '../app.css';
-	
-	let { children } = $props();
+  import { Lock } from "phosphor-svelte";
+
+  import "../app.css";
+  import { onMount } from "svelte";
+  import { page } from "$app/state";
+
+  let { children } = $props();
+
+  let url = $state(null) as string | null;
+
+  onMount(() => {
+    const tmpUrl = new URL(page.url.href);
+
+    if (tmpUrl.hostname.startsWith("www.")) {
+      url = tmpUrl.hostname.replace("www.", "");
+    } else {
+      console.error("[remapping] Invalid head URL to remap");
+    }
+  });
 </script>
 
-{@render children()}
+<content
+  class="h-full w-full absolute bg-[#FFFAF3] flex flex-col overflow-clip"
+>
+  <div class="px-14 mt-8 flex justify-between items-center w-full">
+    <img src="/logo.svg" alt="Dotpen Logo" class="h-8" draggable="false" />
+    {#if url}
+      <a href={url}>
+        <Lock
+          class="size-5 cursor-pointer opacity-65 hover:opacity-100 duration-100"
+        />
+      </a>
+    {/if}
+  </div>
+  <div class="w-full h-full px-12 mt-4 mb-48">
+    {@render children()}
+  </div>
+</content>
