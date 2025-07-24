@@ -48,7 +48,19 @@
 
   onMount(() => {
     mounted = true;
-    waitlistCount = 2347;
+    try {
+      const res = await fetch(pb.baseURL + "api/waitlist-members");
+      if (res.ok) {
+        const count = await res.json();
+        waitlistCount = typeof count === "number" ? count : 0;
+      } else {
+        waitlistCount = 0;
+        console.error("Failed to fetch waitlist members");
+      }
+    } catch (err) {
+      waitlistCount = 0;
+      console.error("Error fetching waitlist members", err);
+    }
 
     if (
       typeof window !== "undefined" &&
