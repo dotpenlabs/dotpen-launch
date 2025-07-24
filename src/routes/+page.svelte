@@ -46,7 +46,7 @@
 
   headline = Math.floor(Math.random() * 3) + 1;
 
-  onMount(() => {
+  onMount(async () => {
     mounted = true;
     try {
       const res = await fetch(pb.baseURL + "api/waitlist-members");
