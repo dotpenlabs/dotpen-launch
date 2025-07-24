@@ -29,7 +29,7 @@
     <a href="/" class="lg:active:opacity-65 lg:hover:opacity-80 duration-100">
       <img src="/logo.svg" alt="Dotpen Logo" class="h-8" draggable="false" />
     </a>
-    <a href={url}>
+    <a href={"https://" + url}>
       <Lock
         class="size-5 cursor-pointer lg:opacity-65 lg:hover:opacity-100 duration-100"
       />

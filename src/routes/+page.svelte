@@ -12,7 +12,8 @@
   let waitlistCount = $state(0);
   let alreadySignedUp = $state(false);
 
-  let currentLine = $state("");
+  let { headline, subline } = $props();
+
   let sublineIndex = 0;
   let sublines = [
     "The cursor for bookmarks.",
@@ -43,8 +44,7 @@
     "For when reading list just isn’t enough.",
   ];
 
-  let headline = $state(1);
-  headline = Math.floor(Math.random() * 8) + 1;
+  headline = Math.floor(Math.random() * 3) + 1;
 
   onMount(() => {
     mounted = true;
@@ -58,13 +58,13 @@
     }
 
     sublineIndex = Math.floor(Math.random() * sublines.length);
-    currentLine = sublines[sublineIndex];
+    subline = sublines[sublineIndex];
 
     setInterval(() => {
-      currentLine = "";
+      subline = "";
       setTimeout(() => {
         sublineIndex = (sublineIndex + 1) % sublines.length;
-        currentLine = sublines[sublineIndex];
+        subline = sublines[sublineIndex];
       }, 1000);
     }, 4000);
   });
@@ -129,37 +129,23 @@
       {#if headline === 1}
         Bookmarking, <span class="text-black">reimagined.</span>
       {:else if headline === 2}
-        Your mind deserves a <br /><span class="text-black">quiet space.</span>
-      {:else if headline === 3}
         Beyond <span class="text-black">bookmarks</span>.
-      {:else if headline === 4}
-        <span class="text-black">Bookmarks</span> that spark a joy.
-      {:else if headline === 5}
+      {:else if headline === 3}
         The web, <span class="text-black">organized.</span>
-      {:else if headline === 6}
-        A home for your <span class="text-black">curiosity</span>.
-      {:else if headline === 7}
-        <span class="text-black">Thinks</span> in links.
-      {:else if headline === 8}
-        Remember <span class="text-black">everything</span> that matters.
-      {:else if headline === 9}
-        <span class="text-black">Bookmarks</span> that
-        <span class="text-black">flow</span>.
-      {:else if headline === 10}
-        <span class="text-black">AI</span> that you can trust.
       {/if}
     </p>
 
     <div
       class="h-[1.75rem] sm:h-[1.875rem] md:h-[2rem] -mt-3 flex items-center justify-center"
     >
-      {#key currentLine}
+      {#key subline}
         <p
-          aria-label={currentLine}
+          aria-label={subline}
           class="italic text-sm sm:text-lg md:text-xl text-center font-medium text-black/65 max-w-xl"
-          transition:reveal={{ duration: 650 }}
+          in:reveal={{ duration: 150 * subline.split(" ").length }}
+          out:reveal={{ duration: 650 }}
         >
-          {currentLine}
+          {subline}
         </p>
       {/key}
     </div>
