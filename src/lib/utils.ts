@@ -111,11 +111,9 @@ export function reveal(
 
   const overlay = document.createElement("div");
   const nodeStyle = window.getComputedStyle(node);
-  // Save original node's children for full restoration BEFORE any DOM changes
   const originalChildren = Array.from(node.childNodes).map((n) =>
     n.cloneNode(true)
   );
-  // Match the display type of the original node
   overlay.style.display = nodeStyle.display;
   if (
     nodeStyle.display === "block" ||
@@ -126,21 +124,18 @@ export function reveal(
   }
   overlay.style.flexWrap = "wrap";
   overlay.style.position = "relative";
-  overlay.style.whiteSpace = "pre";
+  overlay.style.whiteSpace = "pre-wrap";
   overlay.style.textAlign = nodeStyle.textAlign;
-  // Also copy className for utility classes like text-center
   overlay.className = (node as HTMLElement).className;
 
   function cloneWithStyles(element: Element): HTMLElement {
     const clone = element.cloneNode(true) as HTMLElement;
     const originalStyle = window.getComputedStyle(element);
 
-    // Copy computed styles
     for (const prop of originalStyle) {
       clone.style[prop as any] = originalStyle.getPropertyValue(prop);
     }
 
-    // Copy classes
     if (element instanceof HTMLElement) {
       clone.className = element.className;
     }
@@ -148,27 +143,23 @@ export function reveal(
     return clone;
   }
 
-  // Helper to deeply clone nodes and collect all leaf spans for animation
   function wrapTextWithSpans(node: Element, parent: HTMLElement) {
     node.childNodes.forEach((child) => {
       if (child.nodeType === Node.TEXT_NODE) {
-        // Split text into words and spaces, then into chars
         const words = (child.textContent || "").split(/(\s+)/);
         words.forEach((word) => {
           if (!word) return;
           if (word.trim() === "") {
-            // Space
             const space = document.createElement("span");
             space.textContent = word;
             space.style.display = "inline-block";
             space.style.whiteSpace = "pre";
             parent.appendChild(space);
           } else {
-            // Word
             const container = document.createElement("span");
-            container.style.display = "inline-flex";
+            container.style.display = "inline-block";
             container.style.position = "relative";
-            container.style.whiteSpace = "pre";
+            container.style.whiteSpace = "pre-wrap";
             for (const char of word) {
               const span = document.createElement("span");
               span.textContent = char;
@@ -176,7 +167,7 @@ export function reveal(
               span.style.position = "relative";
               span.style.opacity = "0";
               span.style.transform = "translateY(20px)";
-              // No extra style here, will be handled by parent container if needed
+
               container.appendChild(span);
               spans.push(span);
             }
@@ -185,17 +176,14 @@ export function reveal(
         });
       } else if (child.nodeType === Node.ELEMENT_NODE) {
         const el = child as HTMLElement;
-        // Clone the element to preserve tag, class, and style
         const clone = document.createElement(el.tagName);
         clone.className = el.className;
         clone.style.cssText = (el as HTMLElement).style.cssText;
-        // Also copy inline style attributes
         for (const attr of el.getAttributeNames()) {
           if (attr === "style")
             clone.setAttribute("style", el.getAttribute("style")!);
         }
         parent.appendChild(clone);
-        // Recursively process children
         wrapTextWithSpans(el, clone);
       }
     });
@@ -220,7 +208,6 @@ export function reveal(
       const absoluteT = Math.abs(t);
 
       spans.forEach((span, i) => {
-        // Reverse the index for out animation to make letters animate in reverse order
         const index = isOut ? spans.length - 1 - i : i;
         const delay = index * stagger;
         const adjustedTime = Math.max(0, duration * absoluteT - delay);
@@ -230,7 +217,6 @@ export function reveal(
         span.style.transform = `translateY(${(1 - eased) * 20}px)`;
       });
 
-      // Only restore original DOM after the out transition
       if (lastT > -1 && t <= -1) {
         node.innerHTML = "";
         for (const child of originalChildren)

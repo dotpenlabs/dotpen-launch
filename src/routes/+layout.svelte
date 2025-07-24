@@ -24,7 +24,9 @@
   class="h-full w-full absolute bg-[#FFFAF3] flex flex-col overflow-clip"
 >
   <div class="px-14 mt-8 flex justify-between items-center w-full">
-    <img src="/logo.svg" alt="Dotpen Logo" class="h-8" draggable="false" />
+    <a href="/" class="active:opacity-65 hover:opacity-80 duration-100">
+      <img src="/logo.svg" alt="Dotpen Logo" class="h-8" draggable="false" />
+    </a>
     {#if url}
       <a href={url}>
         <Lock

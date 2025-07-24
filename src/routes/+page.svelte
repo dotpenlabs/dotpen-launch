@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { backOut } from "svelte/easing";
+  import { backOut, cubicInOut } from "svelte/easing";
   import { onMount } from "svelte";
   import { flyAndScale, reveal } from "$lib/utils";
-  import { fly, scale } from "svelte/transition";
+  import { fade, fly, scale } from "svelte/transition";
   import confetti from "canvas-confetti";
 
   let mounted = $state(false);
@@ -11,39 +11,58 @@
   let alreadySignedUp = $state(false);
 
   let currentLine = $state("");
+  let sublineIndex = 0;
   let sublines = [
-    "The cursor for bookmarking",
-    "The open source bookmarking manager, for the creatives and professionals",
-    "Making bookmarking a joy again",
-    "Turn chaos into clarity, with every bookmark.",
-    "Tame your tabs. Rule your research.",
-    "Crazy fast navigation, for the best of us.",
-    "AI that remembers, what you can’t.",
-    "Clutter-free interface by design.",
-    "Vendor-lock in? No thanks!",
+    "The cursor for bookmarks.",
+    "An open source manager for creatives and professionals.",
+    "Bringing joy back to bookmarking.",
+    "From chaos to clarity — one link at a time.",
+    "Tame your tabs. Master your mind.",
+    "Blazingly fast. Surprisingly simple.",
+    "AI that remembers what you forget.",
+    "Clutter-free by design.",
+    "No vendor lock-in. Ever.",
+    "Where bookmarks feel like second nature.",
+    "One place for everything you want to revisit.",
+    "Save now, find faster.",
+    "Built for flow, not friction.",
+    "A calm place for your internet thoughts.",
+    "Lightweight, like it should be.",
+    "Because the browser wasn't made for memory.",
+    "Less chaos. More clarity.",
+    "You think in links. So do we.",
+    "Minimal UI, maximal focus.",
+    "The fastest way to remember anything online.",
+    "A notebook that thinks in URLs.",
+    "Bookmarks, but beautiful.",
+    "Forget folders. Embrace flow.",
+    "Privacy-first, purpose-built.",
+    "Not another tab manager. A link companion.",
+    "For when reading list just isn’t enough.",
   ];
 
   let headline = $state(1);
-  headline = Math.floor(Math.random() * 4) + 1;
+  headline = Math.floor(Math.random() * 8) + 1;
 
   onMount(() => {
     mounted = true;
     waitlistCount = 2347;
 
-    // Check localStorage for signup
     if (
       typeof window !== "undefined" &&
-      localStorage.getItem("dotpen-waitlist-signedup") === "true"
+      localStorage.getItem("dotpen:waitlist") === "true"
     ) {
       alreadySignedUp = true;
     }
 
-    currentLine = sublines[Math.floor(Math.random() * sublines.length)];
+    sublineIndex = Math.floor(Math.random() * sublines.length);
+    currentLine = sublines[sublineIndex];
 
     setInterval(() => {
       currentLine = "";
       setTimeout(() => {
-        currentLine = sublines[Math.floor(Math.random() * sublines.length)];
+        sublineIndex = (sublineIndex + 1) % sublines.length;
+        currentLine = sublines[sublineIndex];
       }, 1000);
     }, 4000);
   });
@@ -55,7 +74,7 @@
       email = "";
       alreadySignedUp = true;
       if (typeof window !== "undefined") {
-        localStorage.setItem("dotpen-waitlist-signedup", "true");
+        localStorage.setItem("dotpen:waitlist", "true");
       }
       confetti({
         particleCount: 250,
@@ -75,14 +94,26 @@
       class="text-3xl sm:text-4xl md:text-5xl sm:text-nowrap lg:text-6xl italic font-medium text-black/45 text-center leading-tight"
     >
       {#if headline === 1}
-        Bookmarking, <span class="text-black">rethought.</span>
+        Bookmarking, <span class="text-black">reimagined.</span>
       {:else if headline === 2}
-        Your mind, deserves a <br /><span class="text-black">clear space.</span>
+        Your mind deserves a <br /><span class="text-black">quiet space.</span>
       {:else if headline === 3}
-        Beyond <span class="text-black">bookmarking</span>.
+        Beyond <span class="text-black">bookmarks</span>.
       {:else if headline === 4}
-        <span class="text-black">Bookmarking</span> is a
-        <span class="text-black">joy</span> again.
+        <span class="text-black">Bookmarks</span> that spark a joy.
+      {:else if headline === 5}
+        The web, <span class="text-black">organized.</span>
+      {:else if headline === 6}
+        A home for your <span class="text-black">curiosity</span>.
+      {:else if headline === 7}
+        <span class="text-black">Thinks</span> in links.
+      {:else if headline === 8}
+        Remember <span class="text-black">everything</span> that matters.
+      {:else if headline === 9}
+        <span class="text-black">Bookmarks</span> that
+        <span class="text-black">flow</span>.
+      {:else if headline === 10}
+        <span class="text-black">AI</span> that you can trust.
       {/if}
     </p>
 
@@ -123,6 +154,7 @@
     </form>
 
     <div
+      in:fade={{ duration: 650, delay: 500, easing: cubicInOut }}
       class="-mt-3 opacity-65 text-xs flex items-center justify-center gap-2"
     >
       <div class="bg-green-600 rounded-full size-2 animate-pulse"></div>
