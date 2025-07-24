@@ -23,17 +23,17 @@
 <content
   class="h-full w-full absolute bg-[#FFFAF3] flex flex-col overflow-clip"
 >
-  <div class="px-14 mt-8 flex justify-between items-center w-full">
-    <a href="/" class="active:opacity-65 hover:opacity-80 duration-100">
+  <div
+    class="px-14 mt-8 flex justify-center gap-5 flex-row lg:justify-between items-center w-full"
+  >
+    <a href="/" class="lg:active:opacity-65 lg:hover:opacity-80 duration-100">
       <img src="/logo.svg" alt="Dotpen Logo" class="h-8" draggable="false" />
     </a>
-    {#if url}
-      <a href={url}>
-        <Lock
-          class="size-5 cursor-pointer opacity-65 hover:opacity-100 duration-100"
-        />
-      </a>
-    {/if}
+    <a href={url}>
+      <Lock
+        class="size-5 cursor-pointer lg:opacity-65 lg:hover:opacity-100 duration-100"
+      />
+    </a>
   </div>
   <div class="w-full h-full px-12 mt-4 mb-48">
     {@render children()}

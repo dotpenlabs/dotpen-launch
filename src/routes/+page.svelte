@@ -4,6 +4,8 @@
   import { flyAndScale, reveal } from "$lib/utils";
   import { fade, fly, scale } from "svelte/transition";
   import confetti from "canvas-confetti";
+  import { pb } from "$lib";
+  import { ClientResponseError } from "pocketbase";
 
   let mounted = $state(false);
   let email = $state("");
@@ -69,13 +71,44 @@
 
   async function joinWaitlist(e: Event) {
     e.preventDefault();
-    if (email && !alreadySignedUp) {
-      waitlistCount += 1;
-      email = "";
+    console.info("[waitlist] Joining waitlist");
+    if (email) {
       alreadySignedUp = true;
       if (typeof window !== "undefined") {
         localStorage.setItem("dotpen:waitlist", "true");
       }
+
+      try {
+        await pb.collection("waitlist").create({
+          email,
+        });
+
+        waitlistCount += 1;
+      } catch (error) {
+        if (error instanceof ClientResponseError) {
+          console.error("[waitlist] Error creating waitlist entry", error);
+          if (
+            error.cause &&
+            typeof error.cause === "object" &&
+            "data" in error.cause &&
+            error.cause.data &&
+            typeof error.cause.data === "object" &&
+            "data" in error.cause.data &&
+            error.cause.data.data &&
+            typeof error.cause.data.data === "object" &&
+            "email" in error.cause.data.data &&
+            error.cause.data.data.email &&
+            typeof error.cause.data.data.email === "object" &&
+            "code" in error.cause.data.data.email &&
+            error.cause.data.data.email.code === "validation_not_unique"
+          ) {
+            console.error("[waitlist] Email already in waitlist");
+          }
+        }
+      }
+
+      email = "";
+
       confetti({
         particleCount: 250,
         spread: 75,
@@ -91,7 +124,7 @@
   >
     <p
       in:reveal={{ duration: 400 }}
-      class="text-3xl sm:text-4xl md:text-5xl sm:text-nowrap lg:text-6xl italic font-medium text-black/45 text-center leading-tight"
+      class="text-4xl sm:text-4xl md:text-5xl sm:text-nowrap lg:text-6xl italic font-medium text-black/45 text-center leading-tight"
     >
       {#if headline === 1}
         Bookmarking, <span class="text-black">reimagined.</span>
@@ -123,7 +156,7 @@
       {#key currentLine}
         <p
           aria-label={currentLine}
-          class="italic text-base sm:text-lg md:text-xl text-center font-medium text-black/65 max-w-xl"
+          class="italic text-sm sm:text-lg md:text-xl text-center font-medium text-black/65 max-w-xl"
           transition:reveal={{ duration: 650 }}
         >
           {currentLine}
@@ -155,7 +188,7 @@
 
     <div
       in:fade={{ duration: 650, delay: 500, easing: cubicInOut }}
-      class="-mt-3 opacity-65 text-xs flex items-center justify-center gap-2"
+      class="-mt-3 text-nowrap opacity-65 text-xs flex items-center justify-center gap-2"
     >
       <div class="bg-green-600 rounded-full size-2 animate-pulse"></div>
       {#if alreadySignedUp}
