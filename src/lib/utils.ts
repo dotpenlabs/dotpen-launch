@@ -227,6 +227,100 @@ export function reveal(
   };
 }
 
+export function revealWords(
+  node: Element,
+  { duration = 1200, baseSpeed = 300 }: RevealParams = {}
+): TransitionConfig {
+  const originalHTML = node.innerHTML;
+  const spans: HTMLElement[] = [];
+
+  const overlay = document.createElement("div");
+  const nodeStyle = window.getComputedStyle(node);
+  const originalChildren = Array.from(node.childNodes).map((n) =>
+    n.cloneNode(true)
+  );
+  overlay.style.display = nodeStyle.display;
+  if (
+    nodeStyle.display === "block" ||
+    nodeStyle.display === "flex" ||
+    nodeStyle.display === "grid"
+  ) {
+    overlay.style.width = "100%";
+  }
+  overlay.style.flexWrap = "wrap";
+  overlay.style.position = "relative";
+  overlay.style.whiteSpace = "pre-wrap";
+  overlay.style.textAlign = nodeStyle.textAlign;
+  overlay.className = (node as HTMLElement).className;
+
+  function wrapWords(node: Element, parent: HTMLElement) {
+    node.childNodes.forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const words = (child.textContent || "").split(/(\s+)/);
+        words.forEach((word) => {
+          const span = document.createElement("span");
+          span.textContent = word;
+          span.style.display = "inline-block";
+          span.style.whiteSpace = "pre";
+          span.style.position = "relative";
+          span.style.opacity = "0";
+          span.style.transform = "translateY(20px)";
+          parent.appendChild(span);
+          spans.push(span);
+        });
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        const el = child as HTMLElement;
+        const clone = document.createElement(el.tagName);
+        clone.className = el.className;
+        clone.style.cssText = el.style.cssText;
+        for (const attr of el.getAttributeNames()) {
+          if (attr === "style")
+            clone.setAttribute("style", el.getAttribute("style")!);
+        }
+        parent.appendChild(clone);
+        wrapWords(el, clone);
+      }
+    });
+  }
+
+  overlay.innerHTML = "";
+  wrapWords(node, overlay);
+
+  node.innerHTML = "";
+  node.appendChild(overlay);
+
+  const totalWords = spans.length;
+  const stagger =
+    totalWords > 1 ? (duration - baseSpeed) / (totalWords - 1) : 0;
+
+  let lastT = 0;
+
+  return {
+    duration,
+    tick: (t: number) => {
+      const isOut = t < 0;
+      const absoluteT = Math.abs(t);
+
+      spans.forEach((span, i) => {
+        const index = isOut ? spans.length - 1 - i : i;
+        const delay = index * stagger;
+        const adjustedTime = Math.max(0, duration * absoluteT - delay);
+        const progress = Math.min(1, adjustedTime / baseSpeed);
+        const eased = isOut ? cubicIn(1 - progress) : cubicOut(progress);
+        span.style.opacity = `${eased}`;
+        span.style.transform = `translateY(${(1 - eased) * 20}px)`;
+      });
+
+      if (lastT > -1 && t <= -1) {
+        node.innerHTML = "";
+        for (const child of originalChildren)
+          node.appendChild(child.cloneNode(true));
+      }
+      lastT = t;
+    },
+  };
+}
+
 export function focus(node: HTMLElement): { destroy: () => void } {
   node.focus();
   return { destroy: () => {} };

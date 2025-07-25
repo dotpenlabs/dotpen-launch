@@ -1,7 +1,7 @@
 <script lang="ts">
   import { backOut, cubicInOut } from "svelte/easing";
   import { onMount } from "svelte";
-  import { flyAndScale, reveal } from "$lib/utils";
+  import { flyAndScale, reveal, revealWords } from "$lib/utils";
   import { fade, fly, scale } from "svelte/transition";
   import confetti from "canvas-confetti";
   import { pb } from "$lib";
@@ -11,8 +11,6 @@
   let email = $state("");
   let waitlistCount = $state(0);
   let alreadySignedUp = $state(false);
-
-  let headlineComponent: HTMLElement = $state();
 
   let { headline, subline } = $props();
 
@@ -137,7 +135,7 @@
     class="h-full w-full flex flex-col justify-center items-center gap-6 px-4"
   >
     <p
-      bind:this={headlineComponent}
+      transition:reveal={{ duration: 150 * headline.split(" ").length }}
       class="text-4xl sm:text-4xl md:text-5xl sm:text-nowrap lg:text-6xl italic font-medium text-black/45 text-center leading-tight"
     >
       {#if headline === 1}
@@ -156,8 +154,8 @@
         <p
           aria-label={subline}
           class="italic text-sm sm:text-lg md:text-xl text-center font-medium text-black/65 max-w-xl"
-          in:reveal={{ duration: 150 * subline.split(" ").length }}
-          out:reveal={{ duration: 650 }}
+          in:revealWords={{ duration: 100 * subline.split(" ").length }}
+          out:revealWords={{ duration: 650 }}
         >
           {subline}
         </p>
