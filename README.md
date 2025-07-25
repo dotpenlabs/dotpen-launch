@@ -1,38 +1,57 @@
-# sv
+<img src="./static/assets/og.png" alt="Dotpen Launch Banner" width="100%" />
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+no noise — just a clean page to introduce Dotpen.  
+built for people who want bookmarking to feel good again.
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+## what is this?
 
-```bash
-# create a new project in the current directory
-npx sv create
+this is the public launch page for [dotpen.app](https://dotpen.app) —  
+a distraction-free, privacy-first bookmarking tool for the web.
 
-# create a new project in my-app
-npx sv create my-app
-```
+- ✨ clean and minimal interface  
+- 🧠 AI that organizes for you  
+- 🔌 plugin support from day one  
+- 🌐 works on mobile, desktop, and everywhere in between  
+- 🛡️ privacy-first, no tracking — ever
 
-## Developing
+---
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## join the waitlist
 
-```bash
-npm run dev
+we’re slowly rolling out access to early testers.  
+sign up at [dotpen.app](https://dotpen.app) to reserve your spot.  
+you’ll be the first to hear when we launch public beta.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+---
 
-## Building
+## why we made this
 
-To create a production version of your app:
+bookmarks are broken. tabs pile up.  
+link managers feel bloated or abandoned.
 
-```bash
-npm run build
-```
+dotpen is different —  
+a tool that fades into the background, but remembers everything for you.  
+made for creatives, researchers, and anyone who touches the internet for a living.
 
-You can preview the production build with `npm run preview`.
+---
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+## coming soon
+
+- browser extensions  
+- AI-powered tagging and sorting  
+- shared libraries for teams  
+- import from Chrome, Safari, Raindrop, Pocket & more
+
+---
+
+## license
+
+code will be [open source](https://github.com/dotpenlabs/dotpen) —  
+but this repo is just the static launch site.  
+MIT licensed.
+
+---
+
+made with care by [dotpen labs](https://dotpen.app)
