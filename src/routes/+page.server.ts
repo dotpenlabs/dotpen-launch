@@ -5,6 +5,7 @@ export const load = (async () => {
     "Bookmarking, reimagined.",
     "Beyond bookmarks.",
     "The web, organized.",
+    "The last bookmark manager you'll need"
   ];
 
   const sublines = [

@@ -45,7 +45,7 @@
     "For when reading list just isn’t enough.",
   ];
 
-  headline = Math.floor(Math.random() * 3) + 1;
+  headline = Math.floor(Math.random() * 4) + 1;
 
   onMount(async () => {
     mounted = true;
@@ -147,6 +147,8 @@
         Beyond <span class="text-black">bookmarks</span>.
       {:else if headline === 3}
         The web, <span class="text-black">organized.</span>
+      {:else if headline === 4}
+        The last bookmark manager you'll ever need.
       {/if}
     </p>
 
