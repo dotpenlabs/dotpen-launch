@@ -12,6 +12,8 @@
   let waitlistCount = $state(0);
   let alreadySignedUp = $state(false);
 
+  let headlineComponent: HTMLElement = $state();
+
   let { headline, subline } = $props();
 
   let sublineIndex = 0;
@@ -123,7 +125,7 @@
     class="h-full w-full flex flex-col justify-center items-center gap-6 px-4"
   >
     <p
-      in:reveal={{ duration: 400 }}
+      bind:this={headlineComponent}
       class="text-4xl sm:text-4xl md:text-5xl sm:text-nowrap lg:text-6xl italic font-medium text-black/45 text-center leading-tight"
     >
       {#if headline === 1}
