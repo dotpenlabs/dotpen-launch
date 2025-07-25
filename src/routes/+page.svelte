@@ -11,6 +11,7 @@
   let email = $state("");
   let waitlistCount = $state(0);
   let alreadySignedUp = $state(false);
+  let isSigningUp = $state(false);
 
   let { headline, subline } = $props();
 
@@ -83,6 +84,7 @@
 
   async function joinWaitlist(e: Event) {
     e.preventDefault();
+    isSigningUp = true;
     console.info("[waitlist] Joining waitlist");
     if (email) {
       alreadySignedUp = true;
@@ -120,6 +122,7 @@
       }
 
       email = "";
+      isSigningUp = false;
 
       confetti({
         particleCount: 250,
@@ -177,13 +180,23 @@
         autocomplete="off"
       />
       <div class="grid">
-        <button
-          type="submit"
-          class="bg-black hover:bg-black/80 active:bg-black/70 active:scale-98 text-white text-light font-sans px-3 rounded-xl cursor-pointer py-1 text-nowrap"
-          out:fly={{ y: 10, duration: 650, easing: backOut }}
-        >
-          Join waitlist
-        </button>
+        {#if !isSigningUp}
+          <button
+            type="submit"
+            class="bg-black hover:bg-black/80 active:bg-black/70 active:scale-98 text-white text-light font-sans px-3 rounded-xl cursor-pointer py-1 text-nowrap"
+            in:fly={{ y: 10, duration: 650, easing: backOut }}
+          >
+            Join waitlist
+          </button>
+        {:else}
+          <button
+            type="submit"
+            class="bg-black text-white opacity-65 text-light font-sans px-3 rounded-xl cursor-not-allowed py-1 text-nowrap"
+            in:fly={{ y: -10, duration: 650, easing: backOut }}
+          >
+            Loading
+          </button>
+        {/if}
       </div>
     </form>
 
