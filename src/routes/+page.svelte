@@ -154,7 +154,10 @@
         <p
           aria-label={subline}
           class="italic text-sm sm:text-lg md:text-xl text-center font-medium text-black/65 max-w-xl"
-          in:revealWords={{ duration: 100 * subline.split(" ").length }}
+          in:revealWords={{
+            duration: 100 * subline.split(" ").length,
+            direction: "down",
+          }}
           out:revealWords={{ duration: 650 }}
         >
           {subline}

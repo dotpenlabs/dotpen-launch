@@ -104,7 +104,11 @@ type RevealParams = {
 
 export function reveal(
   node: Element,
-  { duration = 1200, baseSpeed = 300 }: RevealParams = {}
+  {
+    duration = 1200,
+    baseSpeed = 300,
+    direction = "up",
+  }: RevealParams & { direction?: "up" | "down" } = {}
 ): TransitionConfig {
   const originalHTML = node.innerHTML;
   const spans: HTMLElement[] = [];
@@ -127,21 +131,6 @@ export function reveal(
   overlay.style.whiteSpace = "pre-wrap";
   overlay.style.textAlign = nodeStyle.textAlign;
   overlay.className = (node as HTMLElement).className;
-
-  function cloneWithStyles(element: Element): HTMLElement {
-    const clone = element.cloneNode(true) as HTMLElement;
-    const originalStyle = window.getComputedStyle(element);
-
-    for (const prop of originalStyle) {
-      clone.style[prop as any] = originalStyle.getPropertyValue(prop);
-    }
-
-    if (element instanceof HTMLElement) {
-      clone.className = element.className;
-    }
-
-    return clone;
-  }
 
   function wrapTextWithSpans(node: Element, parent: HTMLElement) {
     node.childNodes.forEach((child) => {
@@ -166,7 +155,9 @@ export function reveal(
               span.style.display = "inline-block";
               span.style.position = "relative";
               span.style.opacity = "0";
-              span.style.transform = "translateY(20px)";
+              span.style.transform = `translateY(${
+                direction === "up" ? "20px" : "-20px"
+              })`;
 
               container.appendChild(span);
               spans.push(span);
@@ -178,7 +169,7 @@ export function reveal(
         const el = child as HTMLElement;
         const clone = document.createElement(el.tagName);
         clone.className = el.className;
-        clone.style.cssText = (el as HTMLElement).style.cssText;
+        clone.style.cssText = el.style.cssText;
         for (const attr of el.getAttributeNames()) {
           if (attr === "style")
             clone.setAttribute("style", el.getAttribute("style")!);
@@ -213,8 +204,9 @@ export function reveal(
         const adjustedTime = Math.max(0, duration * absoluteT - delay);
         const progress = Math.min(1, adjustedTime / baseSpeed);
         const eased = isOut ? cubicIn(1 - progress) : cubicOut(progress);
+        const offset = (1 - eased) * 20 * (direction === "up" ? 1 : -1);
         span.style.opacity = `${eased}`;
-        span.style.transform = `translateY(${(1 - eased) * 20}px)`;
+        span.style.transform = `translateY(${offset}px)`;
       });
 
       if (lastT > -1 && t <= -1) {
@@ -229,7 +221,11 @@ export function reveal(
 
 export function revealWords(
   node: Element,
-  { duration = 1200, baseSpeed = 300 }: RevealParams = {}
+  {
+    duration = 1200,
+    baseSpeed = 300,
+    direction = "up",
+  }: RevealParams & { direction?: "up" | "down" } = {}
 ): TransitionConfig {
   const originalHTML = node.innerHTML;
   const spans: HTMLElement[] = [];
@@ -264,7 +260,9 @@ export function revealWords(
           span.style.whiteSpace = "pre";
           span.style.position = "relative";
           span.style.opacity = "0";
-          span.style.transform = "translateY(20px)";
+          span.style.transform = `translateY(${
+            direction === "up" ? "20px" : "-20px"
+          })`;
           parent.appendChild(span);
           spans.push(span);
         });
@@ -307,8 +305,9 @@ export function revealWords(
         const adjustedTime = Math.max(0, duration * absoluteT - delay);
         const progress = Math.min(1, adjustedTime / baseSpeed);
         const eased = isOut ? cubicIn(1 - progress) : cubicOut(progress);
+        const offset = (1 - eased) * 20 * (direction === "up" ? 1 : -1);
         span.style.opacity = `${eased}`;
-        span.style.transform = `translateY(${(1 - eased) * 20}px)`;
+        span.style.transform = `translateY(${offset}px)`;
       });
 
       if (lastT > -1 && t <= -1) {
